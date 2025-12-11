@@ -37,7 +37,7 @@ jobs:
   # test:
   #   outputs:
   #     draftBuildCode: ${{ steps.draftBuildCode.outputs.datetime }}
-  #   runs-on: ubuntu-latest
+  #   runs-on: ubuntu-24.04
   #   steps:
   #     - uses: actions/checkout@v3
   #     - uses: subosito/flutter-action@v2.16.0 #issue with 2.13
@@ -64,11 +64,11 @@ jobs:
       matrix:
         include:
           - platform: android-apk
-            os: ubuntu-latest
+            os: ubuntu-24.04
             targets: apk
 
           - platform: android-aab
-            os: ubuntu-latest
+            os: ubuntu-24.04
             targets: aab
 
           - platform: windows
@@ -77,7 +77,7 @@ jobs:
             targets: exe,msix
 
           - platform: linux
-            os: ubuntu-22.04
+            os: ubuntu-24.04
             aarch: amd64
             targets: AppImage,deb,rpm
 
@@ -142,6 +142,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: 7.5
+          # gradle-version: 8.1
       - name: Setup dependencies
         run: |
           make ${{ matrix.platform }}-install-dependencies
@@ -278,7 +279,7 @@ jobs:
     permissions: write-all
     if: ${{ inputs.upload-artifact }}
     needs: [build]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -328,7 +329,7 @@ jobs:
     permissions: write-all
     if: ${{ inputs.upload-artifact && inputs.tag-name != 'draft' }}
     needs: [build]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: checkout
         uses: actions/checkout@v3
