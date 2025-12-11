@@ -171,30 +171,74 @@ ios-release: #not tested
 
 android-libs:
 	@$(MKDIR) $(ANDROID_OUT) || echo Folder already exists. Skipping...
-	curl -L $(CORE_URL)/$(CORE_NAME)-android.tar.gz | tar xz -C $(ANDROID_OUT)/
+	curl -fL $(CORE_URL)/$(CORE_NAME)-android.tar.gz | tar xz -C $(ANDROID_OUT)/ || (echo "Failed to download or extract Android library" && exit 1)
+	@if [ ! -f $(ANDROID_OUT)/libcore.aar ]; then \
+		if [ -f $(ANDROID_OUT)/hiddify-core.aar ]; then \
+			mv $(ANDROID_OUT)/hiddify-core.aar $(ANDROID_OUT)/libcore.aar; \
+		else \
+			echo "Error: libcore.aar not found in archive"; \
+			ls -la $(ANDROID_OUT)/; \
+			exit 1; \
+		fi; \
+	fi
 
 android-apk-libs: android-libs
 android-aab-libs: android-libs
 
 windows-libs:
 	$(MKDIR) $(DESKTOP_OUT) || echo Folder already exists. Skipping...
-	curl -L $(CORE_URL)/$(CORE_NAME)-windows-amd64.tar.gz | tar xz -C $(DESKTOP_OUT)$(SEP)
+	curl -fL $(CORE_URL)/$(CORE_NAME)-windows-amd64.tar.gz | tar xz -C $(DESKTOP_OUT)$(SEP) || (echo "Failed to download or extract Windows library" && exit 1)
+	@if [ ! -f $(DESKTOP_OUT)$(SEP)libcore.dll ]; then \
+		if [ -f $(DESKTOP_OUT)$(SEP)hiddify-core.dll ]; then \
+			mv $(DESKTOP_OUT)$(SEP)hiddify-core.dll $(DESKTOP_OUT)$(SEP)libcore.dll; \
+		else \
+			echo "Error: libcore.dll not found in archive"; \
+			ls -la $(DESKTOP_OUT)$(SEP) || dir $(DESKTOP_OUT)$(SEP); \
+			exit 1; \
+		fi; \
+	fi
 	ls $(DESKTOP_OUT) || dir $(DESKTOP_OUT)$(SEP)
 	
 
 linux-libs:
 	mkdir -p $(DESKTOP_OUT)
-	curl -L $(CORE_URL)/$(CORE_NAME)-linux-amd64.tar.gz | tar xz -C $(DESKTOP_OUT)/
-
+	curl -fL $(CORE_URL)/$(CORE_NAME)-linux-amd64.tar.gz | tar xz -C $(DESKTOP_OUT)/ || (echo "Failed to download or extract Linux library" && exit 1)
+	@if [ ! -f $(DESKTOP_OUT)/lib/libcore.so ]; then \
+		if [ -f $(DESKTOP_OUT)/lib/hiddify-core.so ]; then \
+			mv $(DESKTOP_OUT)/lib/hiddify-core.so $(DESKTOP_OUT)/lib/libcore.so; \
+		elif [ -f $(DESKTOP_OUT)/libcore.so ]; then \
+			mkdir -p $(DESKTOP_OUT)/lib; \
+			mv $(DESKTOP_OUT)/libcore.so $(DESKTOP_OUT)/lib/libcore.so; \
+		else \
+			echo "Error: libcore.so not found in archive"; \
+			ls -la $(DESKTOP_OUT)/; \
+			ls -la $(DESKTOP_OUT)/lib/ 2>/dev/null || echo "lib/ directory not found"; \
+			exit 1; \
+		fi; \
+	fi
 
 macos-libs:
 	mkdir -p  $(DESKTOP_OUT) 
-	curl -L $(CORE_URL)/$(CORE_NAME)-macos-universal.tar.gz | tar xz -C $(DESKTOP_OUT)
+	curl -fL $(CORE_URL)/$(CORE_NAME)-macos-universal.tar.gz | tar xz -C $(DESKTOP_OUT) || (echo "Failed to download or extract macOS library" && exit 1)
+	@if [ ! -f $(DESKTOP_OUT)/libcore.dylib ]; then \
+		if [ -f $(DESKTOP_OUT)/hiddify-core.dylib ]; then \
+			mv $(DESKTOP_OUT)/hiddify-core.dylib $(DESKTOP_OUT)/libcore.dylib; \
+		else \
+			echo "Error: libcore.dylib not found in archive"; \
+			ls -la $(DESKTOP_OUT)/; \
+			exit 1; \
+		fi; \
+	fi
 
 ios-libs: #not tested
 	mkdir -p $(IOS_OUT)
 	rm -rf $(IOS_OUT)/Libcore.xcframework
-	curl -L $(CORE_URL)/$(CORE_NAME)-ios.tar.gz | tar xz -C "$(IOS_OUT)"
+	curl -fL $(CORE_URL)/$(CORE_NAME)-ios.tar.gz | tar xz -C "$(IOS_OUT)" || (echo "Failed to download or extract iOS library" && exit 1)
+	@if [ ! -d $(IOS_OUT)/Libcore.xcframework ]; then \
+		echo "Error: Libcore.xcframework not found in archive"; \
+		ls -la $(IOS_OUT)/; \
+		exit 1; \
+	fi
 
 get-geo-assets:
 	echo ""
