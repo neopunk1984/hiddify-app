@@ -28,9 +28,9 @@ env:
   TARGET_NAME_apk: "Hiddify-Android"
   TARGET_NAME_aab: "Hiddify-Android"
   #TARGET_NAME_exe: "Hiddify-Windows-x64"
-  TARGET_NAME_dmg: "Hiddify-MacOS"
-  TARGET_NAME_pkg: "Hiddify-MacOS-Installer"
-  TARGET_NAME_ipa: "Hiddify-iOS"
+  # TARGET_NAME_dmg: "Hiddify-MacOS"
+  # TARGET_NAME_pkg: "Hiddify-MacOS-Installer"
+  # TARGET_NAME_ipa: "Hiddify-iOS"
   
 
 jobs:
@@ -81,16 +81,17 @@ jobs:
             aarch: amd64
             targets: AppImage,deb,rpm
 
-          - platform: macos
-            os: macos-15
-            aarch: universal
-            targets: dmg,pkg
+          # - platform: macos
+          #   os: macos-15
+          #   aarch: universal
+          #   targets: dmg,pkg
             
           # - platform: ios
           #   os: macos-14
           #   aarch: universal
           #   filename: hiddify-ios
           #   targets: ipa
+
     runs-on: ${{ matrix.os }}
     steps:
       - name: checkout
@@ -230,8 +231,9 @@ jobs:
           ls -R ./build/app/outputs
           cp ./build/app/outputs/bundle/release/app-release.aab out/hiddify-android-market.aab || echo "no aab"
 
-      - name: Copy to out unix
-        if: startsWith(matrix.platform,'linux') || matrix.platform == 'macos' || matrix.platform == 'ios'
+      - name: Copy to out Unix
+        # if: startsWith(matrix.platform,'linux') || matrix.platform == 'macos' || matrix.platform == 'ios'
+        if: startsWith(matrix.platform,'linux')
         run: |
           ls -R dist/
           mkdir out
@@ -275,6 +277,7 @@ jobs:
       #   run: |
       #     security delete-keychain $RUNNER_TEMP/app-signing.keychain-db ||echo ok
       #     rm ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision ||echo ok
+
   update-draft:
     permissions: write-all
     if: ${{ inputs.upload-artifact }}
