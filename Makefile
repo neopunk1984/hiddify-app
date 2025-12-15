@@ -174,7 +174,7 @@ android-libs:
 	curl -fL $(CORE_URL)/$(CORE_NAME)-android.tar.gz | tar xz -C $(ANDROID_OUT)/ || (echo "Failed to download or extract Android library" && exit 1)
 	@if [ ! -f $(ANDROID_OUT)/libcore.aar ]; then \
 		if [ -f $(ANDROID_OUT)/hiddify-core.aar ]; then \
-			mv $(ANDROID_OUT)/hiddify-core.aar $(ANDROID_OUT)/libcore.aar; \
+			cp $(ANDROID_OUT)/hiddify-core.aar $(ANDROID_OUT)/libcore.aar; \
 		else \
 			echo "Error: libcore.aar not found in archive"; \
 			ls -la $(ANDROID_OUT)/; \
