@@ -54,6 +54,9 @@ android {
 
     kotlinOptions {
         jvmTarget = '17'
+        freeCompilerArgs += [
+            '-Xjvm-default=all'
+        ]
     }
 
     sourceSets {
@@ -123,7 +126,7 @@ android {
 }
 
 android.applicationVariants.all { variant ->
-    variant.outputs.each { output ->
+    variant.outputs.all { output ->
         output.versionCodeOverride = android.defaultConfig.versionCode
     }
 }
